@@ -1,0 +1,57 @@
+ApiInstance1:
+  Type: AWS::EC2::Instance
+  Properties:
+    BlockDeviceMappings:
+      - DeviceName: "/dev/sda1"
+        Ebs:
+          VolumeType: "gp2"
+          DeleteOnTermination: true
+          VolumeSize: "20"
+    ImageId:
+      Fn::FindInMap:
+        - StageToResource
+        - Ref: Stage
+        - ApiAMI
+    InstanceType:
+      Fn::FindInMap:
+        - StageToResource
+        - Ref: Stage
+        - ApiInstanceType
+    SecurityGroupIds:
+      - Ref: HttpSecurityGroup
+      - Ref: SshSecurityGroup
+    SubnetId:
+      Ref: VPCPublicSubnet1
+    Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${Name}-api-1
+
+ApiInstance2:
+  Type: AWS::EC2::Instance
+  Properties:
+    BlockDeviceMappings:
+      - DeviceName: "/dev/sda1"
+        Ebs:
+          VolumeType: "gp2"
+          DeleteOnTermination: true
+          VolumeSize: "20"
+    ImageId:
+      Fn::FindInMap:
+        - StageToResource
+        - Ref: Stage
+        - ApiAMI
+    InstanceType:
+      Fn::FindInMap:
+        - StageToResource
+        - Ref: Stage
+        - ApiInstanceType
+    SecurityGroupIds:
+      - Ref: HttpSecurityGroup
+      - Ref: SshSecurityGroup
+    SubnetId:
+      Ref: VPCPublicSubnet1
+    Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${Name}-api-2

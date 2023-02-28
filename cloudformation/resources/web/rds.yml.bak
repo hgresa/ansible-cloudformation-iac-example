@@ -1,0 +1,41 @@
+RdsSubnetGroup:
+  Type: AWS::RDS::DBSubnetGroup
+  Properties:
+    DBSubnetGroupName:
+      Fn::Sub: ${Name}-rds-sbg
+    SubnetIds:
+      - Ref: VPCPublicSubnet1
+      - Ref: VPCPublicSubnet2
+
+ApiInstance:
+  Type: AWS::RDS::DBInstance
+  Properties:
+    AllocatedStorage: 100
+    BackupRetentionPeriod: 5
+    DBInstanceClass:
+      Fn::FindInMap:
+        - StageToResource
+        - dev
+        - RdsInstanceType
+    DBInstanceIdentifier:
+      Fn::Sub: ${Name}-mysql
+    DBSecurityGroups:
+      - Ref: MysqlSecurityGroup
+    DBSubnetGroupName:
+      Ref: RdsSubnetGroup
+    EnableCloudwatchLogsExports:
+      - general
+      - audit
+      - error
+      - slowquery
+    Engine: mysql
+    EngineVersion: 8.0
+    MasterUsername: pass
+    MasterUserPassword: pass
+    MonitoringInterval: 5
+    MultiAZ: false
+    NetworkType: ipv4
+    Port: 3306
+    PubliclyAccessible: false
+    StorageEncrypted: true
+    StorageType: gp2

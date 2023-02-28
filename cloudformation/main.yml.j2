@@ -1,0 +1,18 @@
+Parameters:
+{% for filepath in lookup('fileglob', 'parameters.yml', wantlist=True) %}
+{{ lookup('template', filepath)|indent(2, first=True) }}
+{% endfor %}
+Mappings:
+{% for filepath in lookup('fileglob', 'mappings.yml', wantlist=True) %}
+{{ lookup('template', filepath)|indent(2, first=True) }}
+{% endfor %}
+Resources:
+{% for filepath in lookup('fileglob', 'resources/common/vpc/*.yml', wantlist=True) %}
+{{ lookup('template', filepath)|indent(2, first=True) }}
+{% endfor %}
+{% for filepath in lookup('fileglob', 'resources/common/*.yml', wantlist=True) %}
+{{ lookup('template', filepath)|indent(2, first=True) }}
+{% endfor %}
+{% for filepath in lookup('fileglob', 'resources/web/*.yml', wantlist=True) %}
+{{ lookup('template', filepath)|indent(2, first=True) }}
+{% endfor %}

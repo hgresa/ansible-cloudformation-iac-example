@@ -1,0 +1,14 @@
+Name:
+  Type: String
+Stage:
+  Type: String
+  AllowedValues:
+    - prod
+    - dev
+  Default: dev
+ElbCert:
+  Type: String
+WebUrl:
+  Type: String
+HostedZoneName:
+  Type: String

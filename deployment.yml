@@ -1,0 +1,7 @@
+---
+PROJECT: practice
+NAME: dev
+STAGE: dev
+STACK_NAME: practice-dev
+HOSTED_ZONE_NAME: aws.redberry.work
+WEB_URL: practice-dev.aws.redberry.work

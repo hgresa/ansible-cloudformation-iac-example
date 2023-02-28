@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  connection: local
+
+  vars_files:
+    - ./vars/config.yml
+    - ../deployment.yml
+
+  tasks:
+    - include_tasks: ./playbooks/www/main.yml
+    - include_tasks: ./playbooks/db/main.yml

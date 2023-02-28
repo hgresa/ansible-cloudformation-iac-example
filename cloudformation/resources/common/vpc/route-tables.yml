@@ -1,0 +1,34 @@
+RouteTable:
+  Type: AWS::EC2::RouteTable
+  Properties:
+    VpcId:
+      Ref: VPCNetwork
+    Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${Name}-rt
+
+PublicRoute:
+  Type: AWS::EC2::Route
+  Properties:
+    DestinationCidrBlock: 0.0.0.0/0
+    GatewayId:
+      Ref: InternetGateway
+    RouteTableId:
+      Ref: RouteTable
+
+PublicSubnet1RouteTableAssociation:
+  Type: AWS::EC2::SubnetRouteTableAssociation
+  Properties:
+    RouteTableId:
+      Ref: RouteTable
+    SubnetId:
+      Ref: VPCPublicSubnet1
+
+PublicSubne2tRouteTableAssociation:
+  Type: AWS::EC2::SubnetRouteTableAssociation
+  Properties:
+    RouteTableId:
+      Ref: RouteTable
+    SubnetId:
+      Ref: VPCPublicSubnet2

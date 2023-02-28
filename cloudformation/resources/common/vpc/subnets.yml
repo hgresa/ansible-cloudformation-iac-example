@@ -1,0 +1,31 @@
+VPCPublicSubnet1:
+  Type: AWS::EC2::Subnet
+  Properties:
+    AvailabilityZone:
+      Fn::Sub:
+        - ${Region}a
+        - Region: !Ref AWS::Region
+    CidrBlock: 10.0.1.0/24
+    MapPublicIpOnLaunch: true
+    VpcId:
+      Ref: VPCNetwork
+    Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${Name}-sb-pub-1
+
+VPCPublicSubnet2:
+  Type: AWS::EC2::Subnet
+  Properties:
+    AvailabilityZone:
+      Fn::Sub:
+        - ${Region}b
+        - Region: !Ref AWS::Region
+    CidrBlock: 10.0.2.0/24
+    MapPublicIpOnLaunch: true
+    VpcId:
+      Ref: VPCNetwork
+    Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${Name}-sb-pub-2

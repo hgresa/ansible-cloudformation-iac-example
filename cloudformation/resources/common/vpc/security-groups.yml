@@ -1,0 +1,46 @@
+HttpSecurityGroup:
+  Type: AWS::EC2::SecurityGroup
+  Properties:
+    GroupDescription: "Allow worldwide access to HTTP/S protocols"
+    GroupName:
+      Fn::Sub: ${Name}-http-sg
+    SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+    VpcId:
+      Ref: VPCNetwork
+
+SshSecurityGroup:
+  Type: AWS::EC2::SecurityGroup
+  Properties:
+    GroupDescription: "Allow worldwide access to SSH protocol"
+    GroupName:
+      Fn::Sub: ${Name}-ssh-sg
+    SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+    VpcId:
+      Ref: VPCNetwork
+
+MysqlSecurityGroup:
+  Type: AWS::EC2::SecurityGroup
+  Properties:
+    GroupDescription: "Allow EC2 instances to access MySQL"
+    GroupName:
+      Fn::Sub: ${Name}-mysql-sg
+    SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 3306
+        ToPort: 3306
+        SourceSecurityGroupId:
+          Ref: HttpSecurityGroup
+    VpcId:
+      Ref: VPCNetwork

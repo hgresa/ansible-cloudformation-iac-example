@@ -1,0 +1,24 @@
+TargetGroup:
+  Type: AWS::ElasticLoadBalancingV2::TargetGroup
+  Properties:
+    HealthCheckEnabled: true
+    HealthCheckIntervalSeconds: 5
+    HealthCheckPath: /
+    HealthCheckPort: 443
+    HealthCheckProtocol: HTTPS
+    HealthCheckTimeoutSeconds: 3
+    HealthyThresholdCount: 3
+    IpAddressType: ipv4
+    Name:
+      Fn::Sub: ${Name}-api-tg
+    Port: 443
+    Protocol: HTTPS
+    Targets:
+      - Id:
+          Ref: ApiInstance1
+      - Id:
+          Ref: ApiInstance2
+    TargetType: instance
+    UnhealthyThresholdCount: 2
+    VpcId:
+      Ref: VPCNetwork

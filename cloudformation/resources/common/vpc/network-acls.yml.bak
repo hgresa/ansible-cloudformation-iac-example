@@ -1,0 +1,185 @@
+HttpNetworkAcl:
+  Type: AWS::EC2::NetworkAcl
+  Properties:
+    VpcId:
+      Ref: VPCNetwork
+    Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${Name}-nacl-http
+
+SshNetworkAcl:
+  Type: AWS::EC2::NetworkAcl
+  Properties:
+    VpcId:
+      Ref: VPCNetwork
+    Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${Name}-nacl-ssh
+
+EphemeralNetworkAcl:
+  Type: AWS::EC2::NetworkAcl
+  Properties:
+    VpcId:
+      Ref: VPCNetwork
+    Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${Name}-nacl-ephemeral
+
+NaclHttpInboundRule:
+  Type: AWS::EC2::NetworkAclEntry
+  Properties:
+    NetworkAclId:
+      Ref: HttpNetworkAcl
+    Protocol: 6
+    RuleNumber: 100
+    RuleAction: allow
+    CidrBlock: 0.0.0.0/0
+    PortRange:
+      From: 80
+      To: 80
+
+NaclHttpOutboundRule:
+  Type: AWS::EC2::NetworkAclEntry
+  Properties:
+    NetworkAclId:
+      Ref: HttpNetworkAcl
+    Protocol: 6
+    Egress: true
+    RuleNumber: 100
+    RuleAction: allow
+    CidrBlock: 0.0.0.0/0
+    PortRange:
+      From: 80
+      To: 80
+
+NaclHttpsInboundRule:
+  Type: AWS::EC2::NetworkAclEntry
+  Properties:
+    NetworkAclId:
+      Ref: HttpNetworkAcl
+    Protocol: 6
+    RuleNumber: 200
+    RuleAction: allow
+    CidrBlock: 0.0.0.0/0
+    PortRange:
+      From: 443
+      To: 443
+
+NaclHttpsOutboundRule:
+  Type: AWS::EC2::NetworkAclEntry
+  Properties:
+    NetworkAclId:
+      Ref: HttpNetworkAcl
+    Protocol: 6
+    Egress: true
+    RuleNumber: 200
+    RuleAction: allow
+    CidrBlock: 0.0.0.0/0
+    PortRange:
+      From: 443
+      To: 443
+
+NaclSshInboundRule:
+  Type: AWS::EC2::NetworkAclEntry
+  Properties:
+    NetworkAclId:
+      Ref: SshNetworkAcl
+    Protocol: 6
+    RuleNumber: 300
+    RuleAction: allow
+    CidrBlock: 0.0.0.0/0
+    PortRange:
+      From: 22
+      To: 22
+
+NaclSshOutboundRule:
+  Type: AWS::EC2::NetworkAclEntry
+  Properties:
+    NetworkAclId:
+      Ref: SshNetworkAcl
+    Protocol: 6
+    Egress: true
+    RuleNumber: 300
+    RuleAction: allow
+    CidrBlock: 0.0.0.0/0
+    PortRange:
+      From: 22
+      To: 22
+
+NaclEphemeralInboundRule:
+  Type: AWS::EC2::NetworkAclEntry
+  Properties:
+    NetworkAclId:
+      Ref: EphemeralNetworkAcl
+    Protocol: 6
+    RuleNumber: 400
+    RuleAction: allow
+    CidrBlock: 0.0.0.0/0
+    PortRange:
+      From: 22
+      To: 22
+
+NaclEphemeralOutboundRule:
+  Type: AWS::EC2::NetworkAclEntry
+  Properties:
+    NetworkAclId:
+      Ref: EphemeralNetworkAcl
+    Protocol: 6
+    Egress: true
+    RuleNumber: 400
+    RuleAction: allow
+    CidrBlock: 0.0.0.0/0
+    PortRange:
+      From: 22
+      To: 22
+
+PublicSubnet1HttpNaclAssociation:
+  Type: AWS::EC2::SubnetNetworkAclAssociation
+  Properties:
+    SubnetId:
+      Ref: VPCPublicSubnet1
+    NetworkAclId:
+      Ref: HttpNetworkAcl
+
+PublicSubne2HttpNaclAssociation:
+  Type: AWS::EC2::SubnetNetworkAclAssociation
+  Properties:
+    SubnetId:
+      Ref: VPCPublicSubnet2
+    NetworkAclId:
+      Ref: HttpNetworkAcl
+
+PublicSubnet1SshNaclAssociation:
+  Type: AWS::EC2::SubnetNetworkAclAssociation
+  Properties:
+    SubnetId:
+      Ref: VPCPublicSubnet1
+    NetworkAclId:
+      Ref: SshNetworkAcl
+
+PublicSubnet2SshNaclAssociation:
+  Type: AWS::EC2::SubnetNetworkAclAssociation
+  Properties:
+    SubnetId:
+      Ref: VPCPublicSubnet2
+    NetworkAclId:
+      Ref: SshNetworkAcl
+
+PublicSubnet1EphemeralNaclAssociation:
+  Type: AWS::EC2::SubnetNetworkAclAssociation
+  Properties:
+    SubnetId:
+      Ref: VPCPublicSubnet1
+    NetworkAclId:
+      Ref: EphemeralNetworkAcl
+
+PublicSubnet2EphemeralNaclAssociation:
+  Type: AWS::EC2::SubnetNetworkAclAssociation
+  Properties:
+    SubnetId:
+      Ref: VPCPublicSubnet2
+    NetworkAclId:
+      Ref: EphemeralNetworkAcl

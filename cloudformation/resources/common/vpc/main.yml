@@ -1,0 +1,25 @@
+VPCNetwork:
+  Type: AWS::EC2::VPC
+  Properties:
+    CidrBlock: 10.0.0.0/16
+    EnableDnsHostnames: true
+    Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${Name}-vpc
+
+InternetGateway:
+  Type: AWS::EC2::InternetGateway
+  Properties:
+    Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${Name}-igw
+
+AttachGateway:
+  Type: AWS::EC2::VPCGatewayAttachment
+  Properties:
+    VpcId:
+      Ref: VPCNetwork
+    InternetGatewayId:
+      Ref: InternetGateway
