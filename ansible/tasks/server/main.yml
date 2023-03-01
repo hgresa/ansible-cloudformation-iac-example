@@ -1,0 +1,74 @@
+---
+- name: Update apt cache if needed
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+    upgrade: true
+
+- name: Install prerequisites
+  ansible.builtin.apt:
+    name:
+      - acl
+      - python3-pymsql
+      - mysql-client
+      - pip
+    state: present
+
+- name: Install amazon.aws* prerequisities
+  ansible.builtin.pip:
+    name:
+      - boto3
+      - botocore
+    state: present
+
+- name: Create users
+  ansible.builtin.user:
+    name: "{{ item }}"
+    create_home: true
+    state: present
+    shell: /bin/bash
+    password: "!"
+  with_items:
+    - "{{ app_user }}"
+
+- name: Ensure .ssh directories for users
+  ansible.builtin.file:
+    path: "/home/{{ item }}/.ssh/"
+    state: directory
+    mode: 0700
+    owner: "{{ item }}"
+    group: "{{ item }}"
+
+- name: Add GitHub repository private key
+  become_user: "{{ app_user }}"
+  copy:
+    content: "{{ aws_ssm['/{}/github_private_ssh_key'.format(PROJECT)] }}"
+    dest: /home/{{ app_user }}/.ssh/id_rsa
+    mode: 0600
+
+- name: Add developers authorized keys
+  authorized_key:
+    user: "{{ app_user }}"
+    key: "{{ developer_ssh_keys | dict2items | map(attribute='value') | join('\n') }}"
+    state: present
+  when: developer_ssh_keys is defined and NAME != 'prod'
+
+- name: Add developers authorized keys to the forwarder user
+  authorized_key:
+    user: forwarder
+    key: "{{ developer_ssh_keys | dict2items | map(attribute='value') | join('\n') }}"
+    state: present
+  when: developer_ssh_keys is defined
+
+- name: Add admins authorized keys
+  authorized_key:
+    user: "{{ ansible_user }}"
+    key: "{{ admin_ssh_keys | dict2items | map(attribute='value') | join('\n') }}"
+    state: present
+  when: admin_ssh_keys is defined
+
+- name: Register Cloudformation stack info
+  amazon.aws.cloudformation_info:
+    profile: rdbr-toma
+    stack_name: "{{ STACK_NAME }}"
+  register: cf_stack

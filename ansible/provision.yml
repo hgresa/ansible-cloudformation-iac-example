@@ -11,21 +11,22 @@
         src: ../cloudformation/main.yml.j2
         dest: ./cf-stack.yml
 
-    - name: Get ELB cert arn
-      community.aws.acm_certificate_info:
-        profile: rdbr-toma
-        domain_name: "*.{{ HOSTED_ZONE_NAME }}"
-      register: elb_cert
+    # - name: Get ELB cert arn
+    #   community.aws.acm_certificate_info:
+    #     profile: rdbr-toma
+    #     domain_name: "*.{{ HOSTED_ZONE_NAME }}"
+    #   register: elb_cert
 
-    - name: test
-      amazon.aws.cloudformation:
-        profile: rdbr-toma
-        stack_name: "{{ STACK_NAME }}"
-        state: present
-        template: ./cf-stack.yml
-        template_parameters:
-          Name: "{{ STACK_NAME }}"
-          Stage: "{{ STAGE }}"
-          ElbCert: "{{ elb_cert.certificates[0].certificate_arn }}"
-          WebUrl: "{{ WEB_URL }}"
-          HostedZoneName: "{{ HOSTED_ZONE_NAME }}"
+    # - name: test
+    #   amazon.aws.cloudformation:
+    #     profile: rdbr-toma
+    #     stack_name: "{{ STACK_NAME }}"
+    #     state: present
+    #     template: ./cf-stack.yml
+    #     template_parameters:
+    #       Name: "{{ STACK_NAME }}"
+    #       Stage: "{{ STAGE }}"
+    #       ElbCert: "{{ elb_cert.certificates[0].certificate_arn }}"
+    #       WebUrl: "{{ WEB_URL }}"
+    #       HostedZoneName: "{{ HOSTED_ZONE_NAME }}"
+    #       MySqlAdminPass: "{{ lookup('aws_ssm', '/{}/{}/mysql_admin_pass'.format(PROJECT, NAME), decrypt=true, aws_profile='rdbr-toma') }}"

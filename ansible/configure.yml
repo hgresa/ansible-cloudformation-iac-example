@@ -6,6 +6,12 @@
     - ./vars/config.yml
     - ../deployment.yml
 
+  vars:
+    - aws_ssm: "{{ lookup('amazon.aws.aws_ssm', '/{}/'.format(PROJECT), recursive=true, bypath=true) }}"
+    - developer_ssh_keys: "{{ lookup('amazon.aws.aws_ssm', '/{}/developer_ssh_keys'.format(PROJECT), shortnames=true, recursive=true, bypath=true) }}"
+    - admin_ssh_keys: "{{ lookup('amazon.aws.aws_ssm', '/{}/admin_ssh_keys'.format(PROJECT), shortnames=true, recursive=true, bypath=true) }}"
+
   tasks:
-    - include_tasks: ./playbooks/www/main.yml
-    - include_tasks: ./playbooks/db/main.yml
+    - include_tasks: ./tasks/server/main.yml
+    - include_tasks: ./tasks/www/main.yml
+    - include_tasks: ./tasks/db/main.yml

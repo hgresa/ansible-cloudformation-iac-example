@@ -12,3 +12,5 @@ WebUrl:
   Type: String
 HostedZoneName:
   Type: String
+MySqlAdminPass:
+  Type: String

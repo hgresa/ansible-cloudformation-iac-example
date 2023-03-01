@@ -1,13 +1,14 @@
 RdsSubnetGroup:
   Type: AWS::RDS::DBSubnetGroup
   Properties:
+    DBSubnetGroupDescription: Public Subnets
     DBSubnetGroupName:
       Fn::Sub: ${Name}-rds-sbg
     SubnetIds:
       - Ref: VPCPublicSubnet1
       - Ref: VPCPublicSubnet2
 
-ApiInstance:
+ApiRDSInstance:
   Type: AWS::RDS::DBInstance
   Properties:
     AllocatedStorage: 100
@@ -30,8 +31,9 @@ ApiInstance:
       - slowquery
     Engine: mysql
     EngineVersion: 8.0
-    MasterUsername: pass
-    MasterUserPassword: pass
+    MasterUsername: "{{ PROJECT }}_admin"
+    MasterUserPassword:
+      Ref: MySqlAdminPass
     MonitoringInterval: 5
     MultiAZ: false
     NetworkType: ipv4

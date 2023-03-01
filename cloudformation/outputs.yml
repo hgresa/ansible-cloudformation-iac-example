@@ -1,0 +1,20 @@
+RDSEndpointAddr:
+  Description: RDS instance endpoint address
+  Value:
+    Fn::GetAtt:
+      - ApiRDSInstance
+      - Endpoint.Address
+RDSEndpointPort:
+  Description: RDS instance endpoint port
+  Value:
+    Fn::GetAtt:
+      - ApiRDSInstance
+      - Endpoint.Port
+WebURL:
+  Description: URL of the web app
+  Value:
+    Ref: WebUrl
+Region:
+  Description: Region
+  Value:
+    Ref: AWS::Region

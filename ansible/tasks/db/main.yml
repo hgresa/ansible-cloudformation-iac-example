@@ -1,0 +1,58 @@
+---
+- name: Ensure MySQL database
+  community.mysql.mysql_db:
+    name: "{{ aws_ssm['/{}/{}/mysql_database'.format(PROJECT, NAME)] |
+      default(aws_ssm['/{}/{}/mysql_database'.format(PROJECT, 'dev')]) }}"
+    state: present
+    login_host: "{{ cf_stack.cloudformation[STACK_NAME].stack_outputs.RDSEndpointAddr }}"
+    login_port: "{{ cf_stack.cloudformation[STACK_NAME].stack_outputs.RDSEndpointPort }}"
+    login_user: "{{ PROJECT }}_admin"
+    login_password:
+      "{{ aws_ssm['/{}/{}/mysql_admin_pass'.format(PROJECT, NAME)] |
+      default(aws_ssm['/{}/{}/mysql_admin_pass'.format(PROJECT, 'dev')]) }}"
+  run_once: true
+  register: mysql_db
+
+- name: Ensure MySQL user
+  community.mysql.mysql_user:
+    name: "{{ aws_ssm['/{}/{}/mysql_user'.format(PROJECT, NAME)] |
+      default(aws_ssm['/{}/{}/mysql_user'.format(PROJECT, 'dev')]) }}"
+    password: "{{ aws_ssm['/{}/{}/mysql_pass'.format(PROJECT, NAME)] |
+      default(aws_ssm['/{}/{}/mysql_pass'.format(PROJECT, 'dev')]) }}"
+    host: "%"
+    priv: "{{ aws_ssm['/{}/{}/mysql_database'.format(PROJECT, NAME)] |
+      default(aws_ssm['/{}/{}/mysql_database'.format(PROJECT, 'dev')]) }}.*:ALL"
+    state: present
+    login_host: "{{ cf_stack.cloudformation[STACK_NAME].stack_outputs.RDSEndpointAddr }}"
+    login_port: "{{ cf_stack.cloudformation[STACK_NAME].stack_outputs.RDSEndpointPort }}"
+    login_user: "{{ PROJECT }}_admin"
+    login_password:
+      "{{ aws_ssm['/{}/{}/mysql_admin_pass'.format(PROJECT, NAME)] |
+      default(aws_ssm['/{}/{}/mysql_admin_pass'.format(PROJECT, 'dev')]) }}"
+  run_once: true
+
+# - name: Get import sql database
+#   amazon.aws.aws_s3:
+#     bucket: "{{ cf_stack.cloudformation[STACK_NAME].stack_outputs.S3Bucket }}"
+#     mode: get
+#     object: /import.sql
+#     dest: "./import.sql"
+#   run_once: true
+#   ignore_errors: true
+#   register: import_sql
+#   when: NAME != 'prod' and mysql_db.changed
+
+# - name: Import MySQL database
+#   community.mysql.mysql_db:
+#     name: "{{ aws_ssm['/{}/{}/mysql_database'.format(PROJECT, NAME)] |
+#       default(aws_ssm['/{}/{}/mysql_database'.format(PROJECT, 'dev')]) }}"
+#     state: import
+#     target: import.sql
+#     login_host: "{{ cf_stack.cloudformation[STACK_NAME].stack_outputs.RDSEndpointAddr }}"
+#     login_port: "{{ cf_stack.cloudformation[STACK_NAME].stack_outputs.RDSEndpointPort }}"
+#     login_user: "{{ PROJECT }}_admin"
+#     login_password:
+#       "{{ aws_ssm['/{}/{}/mysql_admin_pass'.format(PROJECT, NAME)] |
+#       default(aws_ssm['/{}/{}/mysql_admin_pass'.format(PROJECT, 'dev')]) }}"
+#   run_once: true
+#   when: import_sql.changed

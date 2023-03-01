@@ -16,3 +16,7 @@ Resources:
 {% for filepath in lookup('fileglob', 'resources/web/*.yml', wantlist=True) %}
 {{ lookup('template', filepath)|indent(2, first=True) }}
 {% endfor %}
+Outputs:
+{% for filepath in lookup('fileglob', 'outputs.yml', wantlist=True) %}
+{{ lookup('template', filepath)|indent(2, first=True) }}
+{% endfor %}
